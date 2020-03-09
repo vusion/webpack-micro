@@ -60,27 +60,31 @@ var Micro = /** @class */ (function (_super) {
                 processOutput(assets);
             }
             if (options.record) {
-                micro_1.default.recordSupAppVersion({
+                var recordData_1 = {
                     version: commitId,
                     assets: JSON.stringify(assets),
                     microAppId: options.micro.app.id,
                     description: options.micro.app.description,
-                }).then(function () {
+                };
+                micro_1.default.recordSupAppVersion(recordData_1).then(function () {
                     console.log('record version success');
                     if (options.record) {
-                        micro_1.default.refreshAppVersion({
+                        var refreshData_1 = {
                             microId: options.micro.id,
                             microVersion: options.micro.version,
                             microAppVersion: commitId,
                             microAppId: options.micro.app.id,
-                        }).then(function () {
+                        };
+                        micro_1.default.refreshAppVersion(refreshData_1).then(function () {
                             console.error('refresh version success');
                         }, function () {
                             console.error('refresh version fail');
+                            console.log(JSON.stringify(refreshData_1, null, 4));
                         });
                     }
                 }, function () {
                     console.error('record version fail');
+                    console.log(JSON.stringify(recordData_1, null, 4));
                 });
             }
             return JSON.stringify(assets);
