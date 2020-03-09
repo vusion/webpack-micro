@@ -25,6 +25,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var path = __importStar(require("path"));
 var shelljs_1 = __importDefault(require("shelljs"));
+var micro_1 = __importDefault(require("./micro"));
 var assets_webpack_plugin_1 = __importDefault(require("assets-webpack-plugin"));
 var getCommitId = function () {
     try {
@@ -47,7 +48,7 @@ var Micro = /** @class */ (function (_super) {
         }
         options.filename = commitId + ".json";
         if (!options.path) {
-            options.path = path.join(process.cwd(), options.microName);
+            options.path = path.join(process.cwd(), options.micro.app.name);
         }
         var processOutput = options.processOutput;
         options.processOutput = function (assets) {
@@ -57,6 +58,30 @@ var Micro = /** @class */ (function (_super) {
             });
             if (processOutput) {
                 processOutput(assets);
+            }
+            if (options.record) {
+                micro_1.default.recordSupAppVersion({
+                    version: commitId,
+                    assets: JSON.stringify(assets),
+                    microAppId: options.micro.app.id,
+                    description: options.micro.app.description,
+                }).then(function () {
+                    console.log('record version success');
+                    if (options.record) {
+                        micro_1.default.refreshAppVersion({
+                            microId: options.micro.id,
+                            microVersion: options.micro.version,
+                            microAppVersion: commitId,
+                            microAppId: options.micro.app.id,
+                        }).then(function () {
+                            console.error('refresh version success');
+                        }, function () {
+                            console.error('refresh version fail');
+                        });
+                    }
+                }, function () {
+                    console.error('record version fail');
+                });
             }
             return JSON.stringify(assets);
         }, _this = _super.call(this, options) || this;

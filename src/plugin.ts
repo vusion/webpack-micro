@@ -1,5 +1,6 @@
 import * as path from 'path';
 import shell from 'shelljs';
+import micro from './micro';
 import AssetsWebpackPlugin from 'assets-webpack-plugin';
 const getCommitId = function (): string {
     try {
@@ -33,7 +34,17 @@ interface Options {
     processOutput: (assets: Assets) => string | void;
     path?: string;
     commitId?: string;
-    microName: string;
+    micro: {
+        app: {
+            name: string;
+            id: string;
+            description?: string;
+        };
+        version: string;
+        id: string;
+    };
+    record: boolean;
+    refresh: boolean;
 }
 export default class Micro extends AssetsWebpackPlugin {
     public constructor(options: Options) {
@@ -45,7 +56,7 @@ export default class Micro extends AssetsWebpackPlugin {
         }
         options.filename = `${commitId}.json`;
         if (!options.path) {
-            options.path = path.join(process.cwd(), options.microName);
+            options.path = path.join(process.cwd(), options.micro.app.name);
         }
         const processOutput = options.processOutput;
         options.processOutput = function (assets: Assets): string {
@@ -55,6 +66,34 @@ export default class Micro extends AssetsWebpackPlugin {
             });
             if (processOutput) {
                 processOutput(assets);
+            }
+            if (options.record) {
+                const recordData = {
+                    version: commitId,
+                    assets: JSON.stringify(assets),
+                    microAppId: options.micro.app.id,
+                    description: options.micro.app.description,
+                };
+                micro.recordSupAppVersion(recordData).then((): void => {
+                    console.log('record version success');
+                    if (options.record) {
+                        const refreshData = {
+                            microId: options.micro.id,
+                            microVersion: options.micro.version,
+                            microAppVersion: commitId,
+                            microAppId: options.micro.app.id,
+                        };
+                        micro.refreshAppVersion(refreshData).then((): void => {
+                            console.error('refresh version success');
+                        }, (): void => {
+                            console.error('refresh version fail');
+                            console.log(JSON.stringify(refreshData, null, 4));
+                        });
+                    }
+                }, (): void => {
+                    console.error('record version fail');
+                    console.log(JSON.stringify(recordData, null, 4));
+                });
             }
             return JSON.stringify(assets);
         },

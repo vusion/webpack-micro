@@ -23,7 +23,17 @@ interface Options {
     processOutput: (assets: Assets) => string | void;
     path?: string;
     commitId?: string;
-    microName: string;
+    micro: {
+        app: {
+            name: string;
+            id: string;
+            description?: string;
+        };
+        version: string;
+        id: string;
+    };
+    record: boolean;
+    refresh: boolean;
 }
 export default class Micro extends AssetsWebpackPlugin {
     constructor(options: Options);

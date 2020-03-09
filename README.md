@@ -66,6 +66,17 @@ interface Options {
     processOutput: (assets: Assets) => string | void; // assets object
     path?: string; // file path, will join `microName`
     commitId?: string; // git commitId, if not will auto get
-    microName: string; // micro name
+    micro: {
+        app: {
+            name: string; // subApp name
+            id: string; // subApp id
+            assets: string; // subApp static resource
+            description?: string; // subApp version description
+        },
+        version: string; // app version
+        id: string;  // app id
+    };
+    record: boolean; // record subApp version in vusion platform.if true, micro.app is required, else micro.app.name is required
+    refresh: boolean; // refresh app vusion in vusion platform.if true, micro.id and micro.version are required
 }
 ```
