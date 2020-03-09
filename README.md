@@ -70,7 +70,6 @@ interface Options {
         app: {
             name: string; // subApp name
             id: string; // subApp id
-            assets: string; // subApp static resource
             description?: string; // subApp version description
         },
         version: string; // app version
