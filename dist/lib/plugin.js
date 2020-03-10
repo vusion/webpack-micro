@@ -52,17 +52,28 @@ var Micro = /** @class */ (function (_super) {
         }
         var processOutput = options.processOutput;
         options.processOutput = function (assets) {
-            Object.values(assets).forEach(function (item) {
+            var values = Object.values(assets);
+            values.forEach(function (item) {
                 item.js && !Array.isArray(item.js) && (item.js = [item.js]);
                 item.css && !Array.isArray(item.css) && (item.css = [item.css]);
             });
+            var entryAssets = null;
             if (processOutput) {
-                processOutput(assets);
+                entryAssets = processOutput(assets);
+                if (!assets.js || !assets.css) {
+                    console.error("processOutput return data like\n{\n    js?: string[] | string;\n    css?: string[] | string;\n    [props: string]: string[] | string;\n}");
+                }
+            }
+            else {
+                if (values.length > 1) {
+                    console.error("must have one entry. please handle it by processOutput");
+                }
+                entryAssets = values[0];
             }
             if (options.record) {
                 var recordData_1 = {
                     version: commitId,
-                    assets: JSON.stringify(assets),
+                    assets: JSON.stringify(entryAssets),
                     microAppId: options.micro.app.id,
                     description: options.micro.app.description,
                 };

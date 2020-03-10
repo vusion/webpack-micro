@@ -1,10 +1,11 @@
 import AssetsWebpackPlugin from 'assets-webpack-plugin';
+interface AssetsItem {
+    js?: string[] | string;
+    css?: string[] | string;
+    [props: string]: string[] | string;
+}
 interface Assets {
-    [props: string]: {
-        js?: string[] | string;
-        css?: string[] | string;
-        [props: string]: string[] | string;
-    };
+    [props: string]: AssetsItem;
 }
 interface Options {
     filename: string;
