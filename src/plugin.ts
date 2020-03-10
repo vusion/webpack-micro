@@ -10,12 +10,13 @@ const getCommitId = function (): string {
         throw new Error('get commitId error.');
     }
 };
+interface AssetsItem {
+    js?: string[] | string;
+    css?: string[] | string;
+    [props: string]: string[] | string;
+}
 interface Assets {
-    [props: string]: {
-        js?: string[] | string;
-        css?: string[] | string;
-        [props: string]: string[] | string;
-    };
+    [props: string]: AssetsItem;
 }
 interface Options {
     filename: string;
@@ -60,17 +61,32 @@ export default class Micro extends AssetsWebpackPlugin {
         }
         const processOutput = options.processOutput;
         options.processOutput = function (assets: Assets): string {
-            Object.values(assets).forEach((item): void => {
+            const values = Object.values(assets);
+            values.forEach((item): void => {
                 item.js && !Array.isArray(item.js) && (item.js = [item.js]);
                 item.css && !Array.isArray(item.css) && (item.css = [item.css]);
             });
+            let entryAssets = null;
             if (processOutput) {
-                processOutput(assets);
+                entryAssets = processOutput(assets);
+                if (!assets.js || !assets.css) {
+                    console.error(`processOutput return data like
+{
+    js?: string[] | string;
+    css?: string[] | string;
+    [props: string]: string[] | string;
+}`);
+                }
+            } else {
+                if (values.length > 1) {
+                    console.error(`must have one entry. please handle it by processOutput`);
+                }
+                entryAssets = values[0];
             }
             if (options.record) {
                 const recordData = {
                     version: commitId,
-                    assets: JSON.stringify(assets),
+                    assets: JSON.stringify(entryAssets),
                     microAppId: options.micro.app.id,
                     description: options.micro.app.description,
                 };
