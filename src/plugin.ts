@@ -92,7 +92,7 @@ export default class Micro extends AssetsWebpackPlugin {
                 };
                 micro.recordSupAppVersion(recordData).then((): void => {
                     console.log('record version success');
-                    if (options.record) {
+                    if (options.refresh) {
                         const refreshData = {
                             microId: options.micro.id,
                             microVersion: options.micro.version,
@@ -112,7 +112,7 @@ export default class Micro extends AssetsWebpackPlugin {
                 });
             }
             return JSON.stringify(assets);
-        },
+        };
         super(options);
     }
 }
