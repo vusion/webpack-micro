@@ -1,6 +1,6 @@
 {
   "name": "webpack-micro",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "",
   "main": "dist/lib/index.js",
   "scripts": {
@@ -10,7 +10,7 @@
     "lint": "eslint src --fix --ext .ts",
     "lib": "tsc",
     "dev": "tsc -w",
-    "prepublishOnly": "npm run lib"
+    "prepublishOnly": "npm run lib && git add ."
   },
   "module": "dist/lib/index.js",
   "typings": "dist/types/index.d.ts",

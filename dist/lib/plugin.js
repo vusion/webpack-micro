@@ -79,7 +79,7 @@ var Micro = /** @class */ (function (_super) {
                 };
                 micro_1.default.recordSupAppVersion(recordData_1).then(function () {
                     console.log('record version success');
-                    if (options.record) {
+                    if (options.refresh) {
                         var refreshData_1 = {
                             microId: options.micro.id,
                             microVersion: options.micro.version,
@@ -99,7 +99,8 @@ var Micro = /** @class */ (function (_super) {
                 });
             }
             return JSON.stringify(assets);
-        }, _this = _super.call(this, options) || this;
+        };
+        _this = _super.call(this, options) || this;
         return _this;
     }
     return Micro;
