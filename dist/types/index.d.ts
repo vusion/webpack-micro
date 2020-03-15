@@ -1,3 +1,4 @@
 import loader from './loader';
 import plugin from './plugin';
-export { loader, plugin, };
+import { default as helper } from './micro';
+export { loader, plugin, helper, };
