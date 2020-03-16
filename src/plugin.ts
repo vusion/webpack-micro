@@ -41,7 +41,8 @@ interface Options {
             id: string;
             description?: string;
         };
-        version: string;
+        version?: string;
+        versions?: string[];
         id: string;
     };
     record: boolean;
@@ -93,13 +94,23 @@ export default class Micro extends AssetsWebpackPlugin {
                 micro.recordSupAppVersion(recordData).then((): void => {
                     console.log('record version success');
                     if (options.refresh) {
+                        let versions = options.micro.versions;
+                        const version = options.micro.version;
+                        if (version) {
+                            versions = [version];
+                        }
                         const refreshData = {
                             microId: options.micro.id,
-                            microVersion: options.micro.version,
                             microAppVersion: commitId,
                             microAppId: options.micro.app.id,
                         };
-                        micro.refreshAppVersion(refreshData).then((): void => {
+                        Promise.all(
+                            versions.map((version): Promise<any> => {
+                                return micro.refreshAppVersion(Object.assign({
+                                    microVersion: version,
+                                }, refreshData));
+                            })
+                        ).then((): void => {
                             console.error('refresh version success');
                         }, (): void => {
                             console.error('refresh version fail');

@@ -80,13 +80,21 @@ var Micro = /** @class */ (function (_super) {
                 micro_1.default.recordSupAppVersion(recordData_1).then(function () {
                     console.log('record version success');
                     if (options.refresh) {
+                        var versions = options.micro.versions;
+                        var version = options.micro.version;
+                        if (version) {
+                            versions = [version];
+                        }
                         var refreshData_1 = {
                             microId: options.micro.id,
-                            microVersion: options.micro.version,
                             microAppVersion: commitId,
                             microAppId: options.micro.app.id,
                         };
-                        micro_1.default.refreshAppVersion(refreshData_1).then(function () {
+                        Promise.all(versions.map(function (version) {
+                            return micro_1.default.refreshAppVersion(Object.assign({
+                                microVersion: version,
+                            }, refreshData_1));
+                        })).then(function () {
                             console.error('refresh version success');
                         }, function () {
                             console.error('refresh version fail');

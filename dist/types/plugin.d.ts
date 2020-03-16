@@ -30,7 +30,8 @@ interface Options {
             id: string;
             description?: string;
         };
-        version: string;
+        version?: string;
+        versions?: string[];
         id: string;
     };
     record: boolean;

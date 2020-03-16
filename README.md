@@ -72,7 +72,8 @@ interface Options {
             id: string; // subApp id
             description?: string; // subApp version description
         },
-        version: string; // app version
+        version?: string; // app version
+        versions?: string[]; // app version
         id: string;  // app id
     };
     record: boolean; // record subApp version in vusion platform.if true, micro.app is required, else micro.app.name is required
