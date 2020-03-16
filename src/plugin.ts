@@ -112,14 +112,16 @@ export default class Micro extends AssetsWebpackPlugin {
                             })
                         ).then((): void => {
                             console.error('refresh version success');
-                        }, (): void => {
-                            console.error('refresh version fail');
+                        }, (e): void => {
+                            console.error('refresh version fail', e);
                             console.log(JSON.stringify(refreshData, null, 4));
+                            process.exit(2);
                         });
                     }
-                }, (): void => {
-                    console.error('record version fail');
+                }, (e): void => {
+                    console.error('record version fail', e);
                     console.log(JSON.stringify(recordData, null, 4));
+                    process.exit(2);
                 });
             }
             return JSON.stringify(assets);
