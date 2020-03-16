@@ -96,14 +96,16 @@ var Micro = /** @class */ (function (_super) {
                             }, refreshData_1));
                         })).then(function () {
                             console.error('refresh version success');
-                        }, function () {
-                            console.error('refresh version fail');
+                        }, function (e) {
+                            console.error('refresh version fail', e);
                             console.log(JSON.stringify(refreshData_1, null, 4));
+                            process.exit(2);
                         });
                     }
-                }, function () {
-                    console.error('record version fail');
+                }, function (e) {
+                    console.error('record version fail', e);
                     console.log(JSON.stringify(recordData_1, null, 4));
+                    process.exit(2);
                 });
             }
             return JSON.stringify(assets);
