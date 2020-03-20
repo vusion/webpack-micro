@@ -5,6 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var babel_1 = __importDefault(require("./babel"));
 exports.babel = babel_1.default;
+var wrap_1 = __importDefault(require("./wrap"));
+exports.wrap = wrap_1.default;
 var plugin_1 = __importDefault(require("./plugin"));
 exports.plugin = plugin_1.default;
 var micro_1 = __importDefault(require("./micro"));

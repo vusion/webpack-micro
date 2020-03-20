@@ -1,30 +1,31 @@
 import path from 'path';
 import webpack from 'webpack';
 import memoryfs from 'memory-fs';
-
-export default (fixture: string, options?: object): Promise<any> => {
+import WrapMicroPlugin from '../src/wrap';
+export default (entry, options?: object): Promise<any> => {
     const compiler = webpack({
         mode: 'development',
         context: __dirname,
-        entry: `./${fixture}`,
+        entry,
         output: {
             path: path.resolve(__dirname),
-            filename: 'bundle.js',
+            filename: '[name].[hash].js',
         },
         module: {
             rules: [{
                 test: /\.js$/,
                 use: [
                     {
-                        loader: path.resolve(__dirname, '../dist/lib/loader.js'),
-                        options,
-                    },
-                    // {
-                    //     loader: 'babel-loader'
-                    // }
+                        loader: 'babel-loader'
+                    }
                 ],
             }]
         },
+        plugins: [
+            new WrapMicroPlugin({
+                microName: 'test',
+            })
+        ],
     });
 
     compiler.outputFileSystem = new memoryfs();
