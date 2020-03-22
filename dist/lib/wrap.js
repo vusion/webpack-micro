@@ -11,7 +11,7 @@ function getWrap(microName, content, isEntry) {
     var beforeContent = ';(function(window,console,setTimeout,setInterval){\n return ';
     var afterContent = "\n})(window.microApp._window,window.microApp._console,window.microApp._setTimeout,window.microApp._setInterval);";
     if (isEntry) {
-        beforeContent = content + ";if (window.microApp.microApp){window.microApp.microApp.microName=\"" + microName + "\";}" + alias + "=window.microApp" + beforeContent;
+        beforeContent = content + ";if (window.microApp._window && window.microApp._window.microApp){window.microApp._window.microApp.microName=\"" + microName + "\";}" + alias + "=window.microApp" + beforeContent;
     }
     return {
         beforeContent: beforeContent,
