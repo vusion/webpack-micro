@@ -1,6 +1,7 @@
 interface Options {
     microName: string;
     lib?: string;
+    global?: string[];
 }
 export default class WrapMicroPlugin {
     private content;

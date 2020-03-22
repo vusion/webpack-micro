@@ -4,6 +4,7 @@ import path from 'path';
 interface Options {
     microName: string;
     lib?: string;
+    global?: string[];
 }
 interface Wrap {
     beforeContent: string;
@@ -11,10 +12,10 @@ interface Wrap {
 }
 function getWrap(microName, content, isEntry): Wrap {
     const alias = `window["${microName}"]`;
-    let beforeContent = ';(function(window,console,document,setTimeout,setInterval){';
-    const afterContent = `})(${alias}._window,${alias}._console,${alias}._document,${alias}._setTimeout,${alias}._setInterval);`;
+    let beforeContent = ';(function(window,console,setTimeout,setInterval){\n return ';
+    const afterContent = `\n})(window.microApp._window,window.microApp._console,window.microApp._setTimeout,window.microApp._setInterval);`;
     if (isEntry) {
-        beforeContent = `${content};${alias}=window.microApp` + beforeContent;
+        beforeContent = `${content};if (window.microApp.microApp){window.microApp.microApp.microName="${microName}";}${alias}=window.microApp` + beforeContent;
     }
     return {
         beforeContent,

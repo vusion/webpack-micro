@@ -8,10 +8,10 @@ var fs_1 = __importDefault(require("fs"));
 var path_1 = __importDefault(require("path"));
 function getWrap(microName, content, isEntry) {
     var alias = "window[\"" + microName + "\"]";
-    var beforeContent = ';(function(window,console,document,setTimeout,setInterval){';
-    var afterContent = "})(" + alias + "._window," + alias + "._console," + alias + "._document," + alias + "._setTimeout," + alias + "._setInterval);";
+    var beforeContent = ';(function(window,console,setTimeout,setInterval){\n return ';
+    var afterContent = "\n})(window.microApp._window,window.microApp._console,window.microApp._setTimeout,window.microApp._setInterval);";
     if (isEntry) {
-        beforeContent = content + ";" + alias + "=window.microApp" + beforeContent;
+        beforeContent = content + ";if (window.microApp.microApp){window.microApp.microApp.microName=\"" + microName + "\";}" + alias + "=window.microApp" + beforeContent;
     }
     return {
         beforeContent: beforeContent,
