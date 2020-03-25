@@ -30,14 +30,16 @@ import { loader } from  'webpack-micro';
 
 ### plugin
 
+#### MicroAssetsPlugin
+
 generate assets info
 
 ```javascript
-import { Plugin } from  'webpack-micro';
-new Plugin(options);
+import { plugin as MicroAssetsPlugin } from  'webpack-micro';
+new MicroAssetsPlugin(options);
 ```
 
-#### options
+##### options
 
 like assets-webpack-plugin
 
@@ -78,5 +80,25 @@ interface Options {
     };
     record: boolean; // record subApp version in vusion platform.if true, micro.app is required, else micro.app.name is required
     refresh: boolean; // refresh app vusion in vusion platform.if true, micro.id and micro.version are required
+}
+```
+
+#### WrapMicroPlugin
+
+wrap code with [vusion-micro-app](https://www.npmjs.com/package/vusion-micro-app)
+
+```js
+import { wrap as WrapMicroPlugin } from  'webpack-micro';
+new WrapMicroPlugin(options);
+```
+
+##### options
+
+```typescript
+interface Options {
+    microName: string;  // microName
+    lib?: string; // vusion-micro-app path, you can custom it.
+    afterContent?: string; // wrap function. default: `);\n})(${alias}._window,${alias}._console,${alias}._setTimeout,${alias}._setInterval);` ${alias} is `window["${microName}"]`
+    beforeContent?: string; // wrap function. default: `;(function(window,console,setTimeout,setInterval){\n return (`
 }
 ```
