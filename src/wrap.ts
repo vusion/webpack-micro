@@ -13,8 +13,8 @@ interface Wrap {
 }
 function getWrap(microName, content, isEntry, beforeContent, afterContent): Wrap {
     const alias = `window["${microName}"]`;
-    beforeContent = beforeContent || `;(function(window,console,setTimeout,setInterval){\n return (`;
-    afterContent = afterContent || `);\n})(${alias}._window,${alias}._console,${alias}._setTimeout,${alias}._setInterval);`;
+    beforeContent = beforeContent || `;(function(window,console,setTimeout,setInterval){\n `;
+    afterContent = afterContent || `\n})(${alias}._window,${alias}._console,${alias}._setTimeout,${alias}._setInterval);`;
     if (isEntry) {
         beforeContent = `;(function(){var a=window.microName; window.microName="${microName}";${content};window.microName=a;})();${alias}=window.microApp;if (${alias}._window && ${alias}._window.microApp) {${alias}._window.microApp.isWrapRunning = true;}` + beforeContent;
     }
