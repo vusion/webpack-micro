@@ -1,4 +1,3 @@
-export default function ({ types: t, template }: {
-    types: any;
+export default function ({ template }: {
     template: any;
 }): Record<string, any>;

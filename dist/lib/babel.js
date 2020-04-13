@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function default_1(_a) {
-    var t = _a.types, template = _a.template;
+    var template = _a.template;
     var injectList = ['window', 'console', 'setTimeout', 'document', 'setInterval'];
     return {
         visitor: {

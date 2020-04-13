@@ -1,4 +1,4 @@
-export default function({ types: t, template }): Record<string, any> {
+export default function({ template }): Record<string, any> {
     const injectList = ['window', 'console', 'setTimeout', 'document', 'setInterval'];
     return {
         visitor: {
