@@ -11,7 +11,7 @@ interface Wrap {
 function getWrap(microName, beforeContent, afterContent): Wrap {
     const alias = `window["${microName}"]`;
     beforeContent = beforeContent || `;(function(window,console,setTimeout,setInterval){\n `;
-    afterContent = afterContent || `\n})(${alias}._window,${alias}._console,${alias}._setTimeout,${alias}._setInterval);`;
+    afterContent = afterContent || `\n}).bind(${alias}._window)(${alias}._window,${alias}._console,${alias}._setTimeout,${alias}._setInterval);`;
     return {
         beforeContent: `if (${alias}._window && ${alias}._window.microApp) {${alias}._window.microApp.isWrapRunning = true;};` + beforeContent,
         afterContent: afterContent + `;if (${alias}._window && ${alias}._window.microApp) {${alias}._window.microApp.isWrapRunning = false;} \n`,
