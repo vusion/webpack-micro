@@ -3,7 +3,10 @@ import compiler from './compiler';
 test('important window in global2', async (): Promise<void> => {
     const stats = await compiler({
         main: './tmp/main.js',
-        test: ['./tmp/test.js', './tmp/a.js'],
+    }, {
+        microName: 'test',
     });
-    // console.log(stats.toJson());s
+    const output = stats.compilation.assets['main.js'].source();
+    expect(true).toBe(output.trim().startsWith(`if (window["test"]._window && window["test"]._window.microApp) {window["test"]._window.microApp.isWrapRunning = true;};;(function(window,console,setTimeout,setInterval){`));
+    expect(true).toBe(output.trim().endsWith(`})(window["test"]._window,window["test"]._console,window["test"]._setTimeout,window["test"]._setInterval);;if (window["test"]._window && window["test"]._window.microApp) {window["test"]._window.microApp.isWrapRunning = false;}`));
 });

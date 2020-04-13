@@ -97,7 +97,6 @@ new WrapMicroPlugin(options);
 ```typescript
 interface Options {
     microName: string;  // microName
-    lib?: string; // vusion-micro-app path, you can custom it.
     afterContent?: string; // wrap function. default: `\n})(${alias}._window,${alias}._console,${alias}._setTimeout,${alias}._setInterval);` ${alias} is `window["${microName}"]`
     beforeContent?: string; // wrap function. default: `;(function(window,console,setTimeout,setInterval){\n `
 }

@@ -2,14 +2,14 @@ import path from 'path';
 import webpack from 'webpack';
 import memoryfs from 'memory-fs';
 import WrapMicroPlugin from '../src/wrap';
-export default (entry, options?: object): Promise<any> => {
+export default (entry, options?: any): Promise<any> => {
     const compiler = webpack({
         mode: 'development',
         context: __dirname,
         entry,
         output: {
             path: path.resolve(__dirname),
-            filename: '[name].[hash].js',
+            filename: '[name].js',
         },
         module: {
             rules: [{
@@ -22,9 +22,7 @@ export default (entry, options?: object): Promise<any> => {
             }]
         },
         plugins: [
-            new WrapMicroPlugin({
-                microName: 'test',
-            })
+            new WrapMicroPlugin(options)
         ],
     });
 
