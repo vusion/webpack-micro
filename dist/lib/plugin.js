@@ -42,6 +42,7 @@ var Micro = /** @class */ (function (_super) {
         var _this = this;
         options.fullPath = true;
         options.entrypoints = true;
+        var entry = options.entry || 'micro';
         var commitId = options.commitId;
         if (!commitId) {
             commitId = options.commitId = getCommitId();
@@ -53,9 +54,16 @@ var Micro = /** @class */ (function (_super) {
         var processOutput = options.processOutput;
         options.processOutput = function (assets) {
             var values = Object.values(assets);
+            var microEntryAssets = assets[entry];
+            delete assets[entry];
             values.forEach(function (item) {
                 item.js && !Array.isArray(item.js) && (item.js = [item.js]);
                 item.css && !Array.isArray(item.css) && (item.css = [item.css]);
+                if (microEntryAssets) {
+                    if (item.js) {
+                        item.js.unshift(microEntryAssets.js);
+                    }
+                }
             });
             var entryAssets = null;
             if (processOutput) {

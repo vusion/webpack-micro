@@ -46,8 +46,6 @@
   "lint-staged": {
     "{src,test}/**/*.ts": [
       "eslint --fix",
-      "npm run test",
-      "npm run lib",
       "git add"
     ]
   }

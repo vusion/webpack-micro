@@ -80,6 +80,7 @@ interface Options {
     };
     record: boolean; // record subApp version in vusion platform.if true, micro.app is required, else micro.app.name is required
     refresh: boolean; // refresh app vusion in vusion platform.if true, micro.id and micro.version are required
+    entry: string; // vusion-micro-app entry name. default: micro
 }
 ```
 
@@ -97,6 +98,7 @@ new WrapMicroPlugin(options);
 ```typescript
 interface Options {
     microName: string;  // microName
+    entry: string; // vusion-micro-app entry name. default: micro
     afterContent?: string; // wrap function. default: `\n}).bind(${alias}._window)(${alias}._window,${alias}._console,${alias}._setTimeout,${alias}._setInterval);` ${alias} is `window["${microName}"]`
     beforeContent?: string; // wrap function. default: `;(function(window,console,setTimeout,setInterval){\n `
 }

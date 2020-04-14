@@ -36,6 +36,7 @@ interface Options {
     };
     record: boolean;
     refresh: boolean;
+    entry: string;
 }
 export default class Micro extends AssetsWebpackPlugin {
     constructor(options: Options);

@@ -1,6 +1,7 @@
 import { ConcatSource } from 'webpack-sources';
 interface Options {
     microName: string;
+    entry: string;
     afterContent?: string;
     beforeContent?: string;
 }
@@ -24,6 +25,7 @@ export default class WrapMicroPlugin {
     private microName: string;
     private afterContent: string;
     private beforeContent: string;
+    private entry: string;
     public constructor(options: Options) {
         if (!options.microName) {
             throw new TypeError('microName is required');
@@ -31,6 +33,7 @@ export default class WrapMicroPlugin {
         this.microName = options.microName;
         this.beforeContent = options.beforeContent;
         this.afterContent = options.afterContent;
+        this.entry = options.entry || 'micro';
         if (Number(!!this.beforeContent) + Number(!!this.afterContent) === 1) {
             throw new TypeError('beforeContent afterContent is required');
         }
@@ -39,13 +42,15 @@ export default class WrapMicroPlugin {
         compiler.hooks.emit.tapAsync('WrapMicroPlugin', (compilation, next): void => {
             const chunks = compilation.chunks;
             for (let i = 0, len = chunks.length; i < len; i++) {
-                const files = chunks[i].files;
-                files.forEach((file): void => {
-                    if (isJsFile(file)) {
-                        const { beforeContent, afterContent } = getWrap(this.microName, this.beforeContent, this.afterContent);
-                        compilation.assets[file] = new ConcatSource(beforeContent, compilation.assets[file], afterContent);
-                    }
-                });
+                if (chunks[i].name !== this.entry) {
+                    const files = chunks[i].files;
+                    files.forEach((file): void => {
+                        if (isJsFile(file)) {
+                            const { beforeContent, afterContent } = getWrap(this.microName, this.beforeContent, this.afterContent);
+                            compilation.assets[file] = new ConcatSource(beforeContent, compilation.assets[file], afterContent);
+                        }
+                    });
+                }
             }
             next();
         });

@@ -47,11 +47,13 @@ interface Options {
     };
     record: boolean;
     refresh: boolean;
+    entry: string;
 }
 export default class Micro extends AssetsWebpackPlugin {
     public constructor(options: Options) {
         options.fullPath = true;
         options.entrypoints = true;
+        const entry = options.entry || 'micro';
         let commitId = options.commitId;
         if (!commitId) {
             commitId = options.commitId = getCommitId();
@@ -63,9 +65,17 @@ export default class Micro extends AssetsWebpackPlugin {
         const processOutput = options.processOutput;
         options.processOutput = function (assets: Assets): string {
             const values = Object.values(assets);
+            const microEntryAssets = assets[entry];
+            delete assets[entry];
             values.forEach((item): void => {
                 item.js && !Array.isArray(item.js) && (item.js = [item.js]);
                 item.css && !Array.isArray(item.css) && (item.css = [item.css]);
+                if (microEntryAssets) {
+                    if (item.js) {
+                        (item.js as string[]).unshift(microEntryAssets.js as string);
+                    }
+                }
+
             });
             let entryAssets = null;
             if (processOutput) {

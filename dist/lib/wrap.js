@@ -21,6 +21,7 @@ var WrapMicroPlugin = /** @class */ (function () {
         this.microName = options.microName;
         this.beforeContent = options.beforeContent;
         this.afterContent = options.afterContent;
+        this.entry = options.entry || 'micro';
         if (Number(!!this.beforeContent) + Number(!!this.afterContent) === 1) {
             throw new TypeError('beforeContent afterContent is required');
         }
@@ -30,13 +31,15 @@ var WrapMicroPlugin = /** @class */ (function () {
         compiler.hooks.emit.tapAsync('WrapMicroPlugin', function (compilation, next) {
             var chunks = compilation.chunks;
             for (var i = 0, len = chunks.length; i < len; i++) {
-                var files = chunks[i].files;
-                files.forEach(function (file) {
-                    if (isJsFile(file)) {
-                        var _a = getWrap(_this.microName, _this.beforeContent, _this.afterContent), beforeContent = _a.beforeContent, afterContent = _a.afterContent;
-                        compilation.assets[file] = new webpack_sources_1.ConcatSource(beforeContent, compilation.assets[file], afterContent);
-                    }
-                });
+                if (chunks[i].name !== _this.entry) {
+                    var files = chunks[i].files;
+                    files.forEach(function (file) {
+                        if (isJsFile(file)) {
+                            var _a = getWrap(_this.microName, _this.beforeContent, _this.afterContent), beforeContent = _a.beforeContent, afterContent = _a.afterContent;
+                            compilation.assets[file] = new webpack_sources_1.ConcatSource(beforeContent, compilation.assets[file], afterContent);
+                        }
+                    });
+                }
             }
             next();
         });
