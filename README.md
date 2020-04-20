@@ -99,7 +99,7 @@ new WrapMicroPlugin(options);
 interface Options {
     microName: string;  // microName
     entry: string; // vusion-micro-app entry name. default: micro
-    afterContent?: string; // wrap function. default: `\n}).bind(${alias}._window)(${alias}._window,${alias}._console,${alias}._setTimeout,${alias}._setInterval);` ${alias} is `window["${microName}"]`
-    beforeContent?: string; // wrap function. default: `;(function(window,console,setTimeout,setInterval){\n `
+    afterContent?: string; // wrap function. default: `\n}}).call(${alias}._window,${alias}._window,${alias}._window,${alias}._console,${alias}._setTimeout,${alias}._setInterval);` ${alias} is `self["${microName}"]`
+    beforeContent?: string; // wrap function. default: `;(function(window,self,console,setTimeout,setInterval){with(window){\n `
 }
 ```

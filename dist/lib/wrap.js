@@ -2,12 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var webpack_sources_1 = require("webpack-sources");
 function getWrap(microName, beforeContent, afterContent) {
-    var alias = "window[\"" + microName + "\"]";
-    beforeContent = beforeContent || ";(function(window,console,setTimeout,setInterval){\n ";
-    afterContent = afterContent || "\n}).bind(" + alias + "._window)(" + alias + "._window," + alias + "._console," + alias + "._setTimeout," + alias + "._setInterval);";
+    beforeContent = beforeContent || ";(function(window,self,console,setTimeout,setInterval){with(window){\n";
+    afterContent = afterContent || "\n}}).call(_w,_w,_w,_p._console,_p._setTimeout,_p._setInterval);";
+    var worker = "if(!self.document){self._window=self;self._console=console;self._setTimeout=setTimeout;self._setInterval=setInterval;}";
     return {
-        beforeContent: "if (" + alias + "._window && " + alias + "._window.microApp) {" + alias + "._window.microApp.isWrapRunning = true;};" + beforeContent,
-        afterContent: afterContent + (";if (" + alias + "._window && " + alias + "._window.microApp) {" + alias + "._window.microApp.isWrapRunning = false;} \n"),
+        beforeContent: ';(function(_p) {var _w=_p._window;' + worker + "if (_w && _w.microApp) {_w.microApp.isWrapRunning = true;};" + beforeContent,
+        afterContent: afterContent + ";if (_w && _w.microApp) {_w.microApp.isWrapRunning = false;} \n" + ("})(self[\"" + microName + "\"] || self)"),
     };
 }
 var isJsFile = function (str) {
