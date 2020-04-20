@@ -9,5 +9,7 @@ var wrap_1 = __importDefault(require("./wrap"));
 exports.wrap = wrap_1.default;
 var plugin_1 = __importDefault(require("./plugin"));
 exports.plugin = plugin_1.default;
+var global_babel_1 = __importDefault(require("./global.babel"));
+exports.global = global_babel_1.default;
 var micro_1 = __importDefault(require("./micro"));
 exports.helper = micro_1.default;
