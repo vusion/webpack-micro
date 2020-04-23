@@ -1,13 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var webpack_sources_1 = require("webpack-sources");
-function getWrap(microName, beforeContent, afterContent) {
-    beforeContent = beforeContent || ";(function(window,self,console,setTimeout,setInterval){with(window){\n";
-    afterContent = afterContent || "\n}}).call(_w,_w,_w,_p._console,_p._setTimeout,_p._setInterval);";
-    var worker = "if(!self.document){self._window=self;self._console=console;self._setTimeout=setTimeout;self._setInterval=setInterval;}";
+function getWrap(microName) {
+    var beforeContent = ";(function(self){with(self){\n";
+    var afterContent = "\n}}).call(_w,_w);";
+    var worker = "if(!self.document){_w=self;}";
     return {
-        beforeContent: ';(function(_p) {var _w=_p._window;' + worker + "if (_w && _w.microApp) {_w.microApp.isWrapRunning = true;};" + beforeContent,
-        afterContent: afterContent + ";if (_w && _w.microApp) {_w.microApp.isWrapRunning = false;} \n" + ("})(self[\"" + microName + "\"] || self)"),
+        beforeContent: ';(function(_p) {var _w=_p._window||self;' + worker + "if (_w && _w.microApp) {_w.microApp.isWrapRunning = true;};" + beforeContent,
+        afterContent: afterContent + (";if (_w && _w.microApp) {_w.microApp.isWrapRunning=false;}})(self[\"" + microName + "\"]);"),
     };
 }
 var isJsFile = function (str) {
@@ -19,12 +19,7 @@ var WrapMicroPlugin = /** @class */ (function () {
             throw new TypeError('microName is required');
         }
         this.microName = options.microName;
-        this.beforeContent = options.beforeContent;
-        this.afterContent = options.afterContent;
         this.entry = options.entry || 'micro';
-        if (Number(!!this.beforeContent) + Number(!!this.afterContent) === 1) {
-            throw new TypeError('beforeContent afterContent is required');
-        }
     }
     WrapMicroPlugin.prototype.apply = function (compiler) {
         var _this = this;
@@ -35,7 +30,7 @@ var WrapMicroPlugin = /** @class */ (function () {
                     var files = chunks[i].files;
                     files.forEach(function (file) {
                         if (isJsFile(file)) {
-                            var _a = getWrap(_this.microName, _this.beforeContent, _this.afterContent), beforeContent = _a.beforeContent, afterContent = _a.afterContent;
+                            var _a = getWrap(_this.microName), beforeContent = _a.beforeContent, afterContent = _a.afterContent;
                             compilation.assets[file] = new webpack_sources_1.ConcatSource(beforeContent, compilation.assets[file], afterContent);
                         }
                     });
