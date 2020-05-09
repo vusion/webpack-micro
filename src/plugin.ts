@@ -4,7 +4,9 @@ import micro from './micro';
 import AssetsWebpackPlugin from 'assets-webpack-plugin';
 const getCommitId = function (): string {
     try {
-        return shell.exec('git rev-parse HEAD').trim();
+        return shell.exec('git rev-parse HEAD', {
+            silent: true
+        }).trim();
     } catch (error) {
         console.error(error);
         throw new Error('get commitId error.');
@@ -74,9 +76,8 @@ export default class Micro extends AssetsWebpackPlugin {
                 item.js && !Array.isArray(item.js) && (item.js = [item.js]);
                 item.css && !Array.isArray(item.css) && (item.css = [item.css]);
                 if (microEntryAssets) {
-                    if (item.js) {
-                        (item.js as string[]).unshift(microEntryAssets.js as string);
-                    }
+                    microEntryAssets.js && !Array.isArray(microEntryAssets.js) && (microEntryAssets.js = [microEntryAssets.js]);
+                    item.js = [...(microEntryAssets.js as string[]), ...(item.js  as string[])];  
                 }
 
             });
@@ -91,16 +92,11 @@ export default class Micro extends AssetsWebpackPlugin {
     [props: string]: string[] | string;
 }`);
                 }
-            } else {
-                if (values.length > 1) {
-                    console.error(`must have one entry. please handle it by processOutput`);
-                }
-                entryAssets = values[0];
             }
             if (options.record) {
                 const recordData = {
                     version: commitId,
-                    assets: JSON.stringify(entryAssets),
+                    assets: JSON.stringify(assets),
                     microAppId: options.micro.app.id,
                     description: options.micro.app.description,
                 };
@@ -137,7 +133,7 @@ export default class Micro extends AssetsWebpackPlugin {
                     process.exit(2);
                 });
             }
-            return JSON.stringify(assets);
+            return entryAssets ? entryAssets : JSON.stringify(assets);
         };
         super(options);
     }

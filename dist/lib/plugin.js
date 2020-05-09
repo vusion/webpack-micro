@@ -12,6 +12,13 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -29,7 +36,9 @@ var micro_1 = __importDefault(require("./micro"));
 var assets_webpack_plugin_1 = __importDefault(require("assets-webpack-plugin"));
 var getCommitId = function () {
     try {
-        return shelljs_1.default.exec('git rev-parse HEAD').trim();
+        return shelljs_1.default.exec('git rev-parse HEAD', {
+            silent: true
+        }).trim();
     }
     catch (error) {
         console.error(error);
@@ -62,9 +71,8 @@ var Micro = /** @class */ (function (_super) {
                 item.js && !Array.isArray(item.js) && (item.js = [item.js]);
                 item.css && !Array.isArray(item.css) && (item.css = [item.css]);
                 if (microEntryAssets) {
-                    if (item.js) {
-                        item.js.unshift(microEntryAssets.js);
-                    }
+                    microEntryAssets.js && !Array.isArray(microEntryAssets.js) && (microEntryAssets.js = [microEntryAssets.js]);
+                    item.js = __spreadArrays(microEntryAssets.js, item.js);
                 }
             });
             var entryAssets = null;
@@ -74,16 +82,10 @@ var Micro = /** @class */ (function (_super) {
                     console.error("processOutput return data like\n{\n    js?: string[] | string;\n    css?: string[] | string;\n    [props: string]: string[] | string;\n}");
                 }
             }
-            else {
-                if (values.length > 1) {
-                    console.error("must have one entry. please handle it by processOutput");
-                }
-                entryAssets = values[0];
-            }
             if (options.record) {
                 var recordData_1 = {
                     version: commitId,
-                    assets: JSON.stringify(entryAssets),
+                    assets: JSON.stringify(assets),
                     microAppId: options.micro.app.id,
                     description: options.micro.app.description,
                 };
@@ -118,7 +120,7 @@ var Micro = /** @class */ (function (_super) {
                     process.exit(2);
                 });
             }
-            return JSON.stringify(assets);
+            return entryAssets ? entryAssets : JSON.stringify(assets);
         };
         _this = _super.call(this, options) || this;
         return _this;
