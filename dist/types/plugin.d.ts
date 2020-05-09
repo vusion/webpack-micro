@@ -21,7 +21,7 @@ interface Options {
     fullPath: boolean;
     metadata: any;
     entrypoints: boolean;
-    processOutput: (assets: Assets) => string | void;
+    processOutput: (assets: AssetsItem | Assets) => string | void;
     path?: string;
     commitId?: string;
     micro: {

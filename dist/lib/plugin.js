@@ -64,9 +64,13 @@ var Micro = /** @class */ (function (_super) {
         }
         var processOutput = options.processOutput;
         options.processOutput = function (assets) {
-            var values = Object.values(assets);
             var microEntryAssets = assets[entry];
             delete assets[entry];
+            var values = Object.values(assets);
+            if (Object.values(assets).length > 1) {
+                console.error('micro not support multi entry');
+                process.exit(3);
+            }
             values.forEach(function (item) {
                 item.js && !Array.isArray(item.js) && (item.js = [item.js]);
                 item.css && !Array.isArray(item.css) && (item.css = [item.css]);
@@ -76,16 +80,17 @@ var Micro = /** @class */ (function (_super) {
                 }
             });
             var entryAssets = null;
+            var microAssets = values[0];
             if (processOutput) {
-                entryAssets = processOutput(assets);
-                if (!assets.js || !assets.css) {
+                entryAssets = processOutput(microAssets);
+                if (!microAssets.js || !microAssets.css) {
                     console.error("processOutput return data like\n{\n    js?: string[] | string;\n    css?: string[] | string;\n    [props: string]: string[] | string;\n}");
                 }
             }
             if (options.record) {
                 var recordData_1 = {
                     version: commitId,
-                    assets: JSON.stringify(assets),
+                    assets: JSON.stringify(microAssets),
                     microAppId: options.micro.app.id,
                     description: options.micro.app.description,
                 };
@@ -120,7 +125,7 @@ var Micro = /** @class */ (function (_super) {
                     process.exit(2);
                 });
             }
-            return entryAssets ? entryAssets : JSON.stringify(assets);
+            return entryAssets ? entryAssets : JSON.stringify(microAssets);
         };
         _this = _super.call(this, options) || this;
         return _this;

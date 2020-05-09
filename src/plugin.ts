@@ -34,7 +34,7 @@ interface Options {
     fullPath: boolean;
     metadata: any;
     entrypoints: boolean;
-    processOutput: (assets: Assets) => string | void;
+    processOutput: (assets: AssetsItem | Assets) => string | void;
     path?: string;
     commitId?: string;
     micro: {
@@ -69,9 +69,13 @@ export default class Micro extends AssetsWebpackPlugin {
         }
         const processOutput = options.processOutput;
         options.processOutput = function (assets: Assets): string {
-            const values = Object.values(assets);
             const microEntryAssets = assets[entry];
             delete assets[entry];
+            const values = Object.values(assets);
+            if (Object.values(assets).length > 1) {
+                console.error('micro not support multi entry');
+                process.exit(3);
+            }
             values.forEach((item): void => {
                 item.js && !Array.isArray(item.js) && (item.js = [item.js]);
                 item.css && !Array.isArray(item.css) && (item.css = [item.css]);
@@ -82,9 +86,10 @@ export default class Micro extends AssetsWebpackPlugin {
 
             });
             let entryAssets = null;
+            const microAssets = values[0];
             if (processOutput) {
-                entryAssets = processOutput(assets);
-                if (!assets.js || !assets.css) {
+                entryAssets = processOutput(microAssets);
+                if (!microAssets.js || !microAssets.css) {
                     console.error(`processOutput return data like
 {
     js?: string[] | string;
@@ -96,7 +101,7 @@ export default class Micro extends AssetsWebpackPlugin {
             if (options.record) {
                 const recordData = {
                     version: commitId,
-                    assets: JSON.stringify(assets),
+                    assets: JSON.stringify(microAssets),
                     microAppId: options.micro.app.id,
                     description: options.micro.app.description,
                 };
@@ -133,7 +138,7 @@ export default class Micro extends AssetsWebpackPlugin {
                     process.exit(2);
                 });
             }
-            return entryAssets ? entryAssets : JSON.stringify(assets);
+            return entryAssets ? entryAssets : JSON.stringify(microAssets);
         };
         super(options);
     }
