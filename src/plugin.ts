@@ -69,10 +69,12 @@ export default class Micro extends AssetsWebpackPlugin {
         }
         const processOutput = options.processOutput;
         options.processOutput = function (assets: Assets): string {
+            delete assets.js; // dev
+            delete assets.css; // dev
             const microEntryAssets = assets[entry];
             delete assets[entry];
             const values = Object.values(assets);
-            if (Object.values(assets).length > 1) {
+            if (values.length > 1) {
                 console.error('micro not support multi entry');
                 process.exit(3);
             }
