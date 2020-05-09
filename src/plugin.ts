@@ -58,7 +58,10 @@ export default class Micro extends AssetsWebpackPlugin {
         if (!commitId) {
             commitId = options.commitId = getCommitId();
         }
-        options.filename = `${commitId}.json`;
+        options.filename = options.filename || `${commitId}.json`;
+    
+        options.useCompilerPath = 'useCompilerPath' in options ? options.useCompilerPath: true;
+        options.keepInMemory = 'keepInMemory' in options ? options.keepInMemory: true;
         if (!options.path) {
             options.path = path.join(process.cwd(), options.micro.app.name);
         }
