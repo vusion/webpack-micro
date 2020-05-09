@@ -64,10 +64,12 @@ var Micro = /** @class */ (function (_super) {
         }
         var processOutput = options.processOutput;
         options.processOutput = function (assets) {
+            delete assets.js; // dev
+            delete assets.css; // dev
             var microEntryAssets = assets[entry];
             delete assets[entry];
             var values = Object.values(assets);
-            if (Object.values(assets).length > 1) {
+            if (values.length > 1) {
                 console.error('micro not support multi entry');
                 process.exit(3);
             }
